@@ -1,0 +1,36 @@
+.column {
+	background-color:  #4285F4;
+	display: inline-block;
+	margin: -.13rem;
+}
+
+.dot {
+	height: 2rem;
+	width: 2rem;
+	margin: 0.5rem;
+	background-color: white;
+	background-size: 100% auto;
+	border-radius: 50%;
+	border-color: white;
+	border-style: solid;
+}
+
+.dot.red {
+	background-color: #EA4335;
+}
+
+.dot.yellow {
+	background-color: #FBBC05;
+}
+
+.dot.green {
+	background-color: #34A853;
+}
+
+.dot.off {
+	background-color: transparent;
+}
+
+.menu {
+	display: none;
+}
