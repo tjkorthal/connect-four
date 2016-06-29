@@ -1,23 +1,26 @@
 "use strict"
 
-var color = "red",
-    rows = 6,
-    columnsGlobal = 7,
-    redArray = [],
-    yellowArray = [],
+var currentColor = "red",
+    colorOne = "red",
+    colorTwo = "yellow",
+    totalRows = 6,
+    totalColumns = 7,
+    colorOneArray = [],
+    colorTwoArray = [],
     winner = false;
 
 function addDot(){
-  var emptyDotArray = Array.from(this.querySelectorAll("div.dot:not(.red):not(.yellow)"));
+  var emptyDotArray = Array.from(this.querySelectorAll(
+      "div.dot:not(."+colorOne+"):not(."+colorTwo+")"));
   var emptyDot = emptyDotArray.pop();
   if (!emptyDot) return;
-  emptyDot.className = "dot " + color;
-  updateArray(this,emptyDot,color);
+  emptyDot.className = "dot " + currentColor;
+  updateArray(this,emptyDot);
   checkWin();
   if (winner == false){
-    //switch color
-    color = (color == "red" ? "yellow" : "red");
-    updateMessage();
+    //switch currentColor
+    currentColor = (currentColor == colorOne ? colorTwo : colorOne);
+    updateMessage(capitalize(currentColor)+" 's turn");
   }
 }
 
@@ -41,10 +44,9 @@ function checkWin(){
     var strategy = strategies[i];
     for (var j = 0; j < array.length; j++) {
       var consecutive = 1,
-          xIndex = array[j][0],
-          yIndex = array[j][1];
-      consecutive = checkSequence(strategy, array, [xIndex,yIndex], consecutive);
-      if (consecutive == 4) {handleWin(color, strategy);}
+          coordinate = array[j];
+      consecutive = checkSequence(strategy, array, coordinate, consecutive);
+      if (consecutive == 4) {handleWin(currentColor, strategy);}
     }
   }
 }
@@ -59,10 +61,9 @@ function checkSequence(method, array, coordinate, index){
 }
 
 function containsCoordinate(array, coordinate){
-  var x = coordinate[0],
-      y = coordinate[1];
   for (var i = 0; i < array.length; i++) {
-    if ( (array[i][0] == x) && (array[i][1] == y) ){
+    if ( (array[i]["x"] == coordinate["x"]) &&
+         (array[i]["y"] == coordinate["y"]) ){
       return true;
     }
   }
@@ -72,11 +73,11 @@ function containsCoordinate(array, coordinate){
 function createBoard(){
   var target = document.querySelector("section.board");
   target.innerHTML = "";
-  for (var i = 0; i < columnsGlobal; i++) {
+  for (var i = 0; i < totalColumns; i++) {
     var columnNode = document.createElement("div");
     columnNode.className = "column";
     columnNode.setAttribute("data-column-index", i);
-    for (var j = rows-1; j >= 0; j--) {
+    for (var j = totalRows-1; j >= 0; j--) {
       var dotNode = document.createElement("div");
       dotNode.className = "dot";
       dotNode.setAttribute("data-row-index", j);
@@ -87,38 +88,41 @@ function createBoard(){
 }
 
 function diagonalStrategy1(coordinate){
-  return [coordinate[0]+1,coordinate[1]+1];
+  return {"x": coordinate["x"]+1,
+          "y": coordinate["y"]+1 };
 }
 
 function diagonalStrategy2(coordinate){
-  return [coordinate[0]-1,coordinate[1]+1];
+  return {"x": coordinate["x"]-1,
+          "y": coordinate["y"]+1 };
 }
 
 function horizontalStrategy(coordinate){
-  return [coordinate[0]+1,coordinate[1]];
+  return {"x": coordinate["x"]+1,
+          "y": coordinate["y"] };
 };
 
 function verticalStrategy(coordinate){
-  return [coordinate[0],coordinate[1]+1];
+  return {"x": coordinate["x"],
+          "y": coordinate["y"]+1 };
 };
 
 function getColorArray() {
-  return color == "red" ? redArray : yellowArray;
+  return currentColor == colorOne ? colorOneArray : colorTwoArray;
 }
 
-function handleWin(color, strategy){
-  var messageElement = document.querySelector("#flash");
-  messageElement.innerHTML = capitalize(color) + " wins!";
-  removeListeners();
+function handleWin(color){
   winner = true;
+  updateMessage(capitalize(color) + " wins!");
+  removeListeners();
 }
 
 function initialize(){
   winner = false;
-  redArray = [];
-  yellowArray = [];
+  colorOneArray = [];
+  colorTwoArray = [];
   createBoard();
-  updateMessage();
+  updateMessage(capitalize(currentColor) + "'s turn");
   addListeners();
 }
 
@@ -129,14 +133,14 @@ function removeListeners(){
   }
 }
 
-function updateArray(column, row, color) {
+function updateArray(column, row) {
   var x = column.getAttribute("data-column-index"),
       y = row.getAttribute("data-row-index"),
       array = getColorArray();
-  array.push([parseInt(x), parseInt(y)]);
+  array.push({ "x": parseInt(x), "y": parseInt(y)});
 }
 
-function updateMessage(){
+function updateMessage(message){
   var messageElement = document.querySelector("#flash");
-  messageElement.innerHTML = capitalize(color) + "'s turn";
+  messageElement.innerHTML = message;
 }
