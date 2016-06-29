@@ -7,6 +7,8 @@ var currentColor = "red",
     totalColumns = 7,
     colorOneArray = [],
     colorTwoArray = [],
+    colorOneWins = 0,
+    colorTwoWins = 0,
     winner = false;
 
 function addDot(){
@@ -20,7 +22,7 @@ function addDot(){
   checkWin();
   if (winner == false){
     currentColor = switchColor(currentColor);
-    updateMessage(capitalize(currentColor)+" 's turn");
+    updateElementbyId("flash", capitalize(currentColor)+" 's turn");
   }
 }
 
@@ -113,7 +115,10 @@ function getColorArray() {
 
 function handleWin(color){
   winner = true;
-  updateMessage(capitalize(color) + " wins!");
+  updateElementbyId("flash", capitalize(color) + " wins!");
+  color == colorOne ? colorOneWins++ : colorTwoWins++;
+  updateElementbyId("scoreboard", capitalize(colorOne)  + " : " +
+    colorOneWins + "\n" + capitalize(colorTwo) + " : " + colorTwoWins );
   removeListeners();
 }
 
@@ -123,7 +128,7 @@ function initialize(){
   colorTwoArray = [];
   createBoard();
   currentColor = switchColor(currentColor);
-  updateMessage(capitalize(currentColor) + "'s turn");
+  updateElementbyId("flash", capitalize(currentColor) + "'s turn");
   addListeners();
 }
 
@@ -144,7 +149,7 @@ function updateArray(column, row, array) {
   array.push({ "x": parseInt(x), "y": parseInt(y)});
 }
 
-function updateMessage(message){
-  var messageElement = document.querySelector("#flash");
+function updateElementbyId(id, message){
+  var messageElement = document.querySelector("#"+id);
   messageElement.innerHTML = message;
 }
