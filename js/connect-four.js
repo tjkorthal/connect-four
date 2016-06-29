@@ -48,7 +48,7 @@ function checkWin(){
       var consecutive = 1,
           coordinate = array[j];
       consecutive = checkSequence(strategy, array, coordinate, consecutive);
-      if (consecutive == 4) {handleWin(currentColor, strategy);}
+      if (consecutive >= 4) {handleWin(currentColor, strategy);}
     }
   }
 }
