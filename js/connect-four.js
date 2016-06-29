@@ -11,15 +11,15 @@ var currentColor = "red",
 
 function addDot(){
   var emptyDotArray = Array.from(this.querySelectorAll(
-      "div.dot:not(."+colorOne+"):not(."+colorTwo+")"));
-  var emptyDot = emptyDotArray.pop();
+      "div.dot:not(."+colorOne+"):not(."+colorTwo+")")),
+      emptyDot = emptyDotArray.pop(),
+      array = getColorArray();
   if (!emptyDot) return;
   emptyDot.className = "dot " + currentColor;
-  updateArray(this,emptyDot);
+  updateArray(this,emptyDot,array);
   checkWin();
   if (winner == false){
-    //switch currentColor
-    currentColor = (currentColor == colorOne ? colorTwo : colorOne);
+    currentColor = switchColor(currentColor);
     updateMessage(capitalize(currentColor)+" 's turn");
   }
 }
@@ -122,6 +122,7 @@ function initialize(){
   colorOneArray = [];
   colorTwoArray = [];
   createBoard();
+  currentColor = switchColor(currentColor);
   updateMessage(capitalize(currentColor) + "'s turn");
   addListeners();
 }
@@ -133,10 +134,13 @@ function removeListeners(){
   }
 }
 
-function updateArray(column, row) {
+function switchColor(color){
+  return (color == colorOne ? colorTwo : colorOne);
+}
+
+function updateArray(column, row, array) {
   var x = column.getAttribute("data-column-index"),
-      y = row.getAttribute("data-row-index"),
-      array = getColorArray();
+      y = row.getAttribute("data-row-index");
   array.push({ "x": parseInt(x), "y": parseInt(y)});
 }
 
