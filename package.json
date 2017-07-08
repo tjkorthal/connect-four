@@ -11,10 +11,11 @@
     "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "faucet": "0.0.1",
     "tape": "^4.7.0"
   },
   "scripts": {
-    "test": "node tests/test.js"
+    "test": "node tests/test.js | faucet"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 # connect-four
-The game Connect Four written in JavaScript. Two players alternate between placing dots with the intention of having four of their color in a row, either horizontally, vertically, or diagonally, before the other player can.
+The game Connect Four written in JavaScript. Two players alternate between placing dots with the intention of having four of their color in a row, either horizontally, vertically, or diagonally, before the other player can. The current release can be played [here](https://tjkorthal.github.io/connect-four/)!
 
 Inspired by tobychin's design of his [binary clock](https://github.com/tobychin/binary-clock).
 
@@ -14,6 +14,7 @@ To play the game simply clone the project and open index.html in a web browser.
 * Node.js
 * Browserify
 * tape
+* faucet
 
 
 ### Prerequisites
@@ -43,10 +44,24 @@ Move into the js directory and tell Browserify to package our code into bundle.j
 
 ## Tests
 
-Tests are written utilizing tape and can be run by simply running the test file via Node.
+Tests are written utilizing tape and can be run by simply running the NPM test script. The output is piped through faucet to pretty print test results.
 
 ```shell
-node ./tests/test.js
+npm test
+```
+Output:
+```
+> @tjkorthal/connect-four@1.0.0 test /Users/tjkorthal/Projects/connect-four
+> node tests/test.js | faucet
+
+✓ capitalize capitalizes the first letter of a string
+✓ switchColor changes between the 2 colors used in the game
+✓ strategies return the next coordinate in a direction
+✓ containsCoordinate returns a boolean
+✓ checkSequence returns the number of points in a sequence
+# tests 15
+# pass  15
+✓ ok
 ```
 
 ## Style guide
