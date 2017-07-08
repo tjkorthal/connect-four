@@ -15,7 +15,8 @@
     "tape": "^4.7.0"
   },
   "scripts": {
-    "test": "node tests/test.js | faucet"
+    "test": "node tests/test.js | faucet",
+    "build": "browserify js/main.js > js/bundle.js"
   },
   "repository": {
     "type": "git",

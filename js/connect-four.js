@@ -1,9 +1,9 @@
 module.exports = (function () {
-  const colorOne = "red",
-        colorTwo = "yellow",
-        totalRows = 6,
-        totalColumns = 7;
-  let currentColor = "red",
+  let colorOne,
+      colorTwo,
+      totalRows,
+      totalColumns,
+      currentColor,
       colorOneArray = [],
       colorTwoArray = [],
       colorOneWins = 0,
@@ -11,21 +11,22 @@ module.exports = (function () {
       winner = false;
 
   return {
-    initialize: function () {
+    initialize: function (opts) {
       const self = this;
+      ({ colorOne = "red", colorTwo = "yellow", totalRows = 6, totalColumns = 7 } = opts);
+      currentColor = colorOne;
       this.reset(self);
-      document.getElementById("reset").addEventListener("click", function () { self.reset(self)});
     },
     addDot: function (context) {
       const emptyDotArray = Array.from(context.querySelectorAll(
           `div.dot:not(.${colorOne}):not(.${colorTwo})`)),
-            emptyDot = emptyDotArray.pop(),
-            array = this.getColorArray();
+            emptyDot = emptyDotArray.pop();
       if (!emptyDot || winner){ return; }
       emptyDot.className = `dot ${currentColor}`;
-      this.updateArray(context, emptyDot, array);
-      this.checkWin();
-      if (winner === false) {
+      this.getColorArray().push(this.getCoordinate(context, emptyDot));
+      if (this.playerWon()) {
+        this.handleWin(currentColor);
+      } else {
         currentColor = this.switchColor(currentColor);
         this.updateElementbyId("flash", `${this.capitalize(currentColor)}'s turn`);
       }
@@ -41,21 +42,6 @@ module.exports = (function () {
     },
     capitalize: function (string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    checkWin: function () {
-      const array = this.getColorArray(),
-            strategies = [this.verticalStrategy, this.horizontalStrategy, this.diagonalStrategy1,
-                        this.diagonalStrategy2];
-      if (array.length < 4) { return; }
-      for (let i = 0; i < strategies.length; i++) {
-        let strategy = strategies[i];
-        for (let j = 0; j < array.length; j++) {
-          let consecutive = 1,
-              coordinate = array[j];
-          consecutive = this.checkSequence(strategy, array, coordinate, consecutive);
-          if (consecutive >= 4) { this.handleWin(currentColor, strategy); }
-        }
-      }
     },
     checkSequence: function (method, array, coordinate, index) {
       if (this.containsCoordinate(array, coordinate)) {
@@ -116,12 +102,33 @@ module.exports = (function () {
     getColorArray: function () {
       return currentColor === colorOne ? colorOneArray : colorTwoArray;
     },
+    getCoordinate: function (column, row) {
+      const x = column.getAttribute("data-column-index"),
+            y = row.getAttribute("data-row-index");
+      return { "x": parseInt(x), "y": parseInt(y) };
+    },
     handleWin: function (color) {
       winner = true;
       this.updateElementbyId("flash", `${this.capitalize(color)} wins!`);
       color == colorOne ? colorOneWins++ : colorTwoWins++;
       this.updateElementbyId("scoreboard", `${this.capitalize(colorOne)}: ${colorOneWins}
         ${this.capitalize(colorTwo)}: ${colorTwoWins}`);
+    },
+    playerWon: function () {
+      const array = this.getColorArray(),
+            strategies = [this.verticalStrategy, this.horizontalStrategy,
+                          this.diagonalStrategy1, this.diagonalStrategy2];
+      if (array.length < 4) { return false; }
+      for (let i = 0; i < strategies.length; i++) {
+        let strategy = strategies[i];
+        for (let j = 0; j < array.length; j++) {
+          let consecutive = 1,
+              coordinate = array[j];
+          consecutive = this.checkSequence(strategy, array, coordinate, consecutive);
+          if (consecutive >= 4) { return true; }
+        }
+      }
+      return false;
     },
     reset: function (context) {
       winner = false;
@@ -134,11 +141,6 @@ module.exports = (function () {
     },
     switchColor: function (color) {
       return (color === colorOne ? colorTwo : colorOne);
-    },
-    updateArray: function (column, row, array) {
-      const x = column.getAttribute("data-column-index"),
-            y = row.getAttribute("data-row-index");
-      array.push({ "x": parseInt(x), "y": parseInt(y) });
     },
     updateElementbyId: function (id, message) {
       const messageElement = document.querySelector("#" + id);
