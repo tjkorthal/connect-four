@@ -3,6 +3,8 @@ The game Connect Four written in JavaScript. Two players alternate between placi
 
 Inspired by tobychin's design of his [binary clock](https://github.com/tobychin/binary-clock).
 
+| Master | [![Build Status](https://travis-ci.org/tjkorthal/connect-four.svg?branch=master)](https://travis-ci.org/tjkorthal/connect-four) | Dev | [![Build Status](https://travis-ci.org/tjkorthal/connect-four.svg?branch=dev)](https://travis-ci.org/tjkorthal/connect-four) |
+--|--|--|--
 
 ### Dependencies
 
@@ -10,7 +12,6 @@ Inspired by tobychin's design of his [binary clock](https://github.com/tobychin/
 * Browserify
 * tape
 * faucet
-
 
 ### Prerequisites
 
@@ -25,6 +26,7 @@ git clone https://github.com/tjkorthal/connect-four
 cd connect-four/
 npm install
 ```
+
 Run the build script to bundle dependencies, then the game can be played by opening index.html in a web browser.
 
 ### Building
@@ -42,7 +44,9 @@ Tests are written utilizing tape and can be run by simply running the NPM test s
 ```shell
 npm test
 ```
+
 Output:
+
 ```
 > @tjkorthal/connect-four@1.0.0 test /Users/tjkorthal/Projects/connect-four
 > node tests/test.js | faucet
@@ -56,6 +60,7 @@ Output:
 # pass  15
 ✓ ok
 ```
+
 Faucet shows check marks (✓) for passing tests and Xs (⨯) for failures.
 
 ## Style guide
