@@ -11,7 +11,7 @@ module.exports = (function () {
       winner = false;
 
   return {
-    initialize: function (opts) {
+    initialize: function (opts = {}) {
       const self = this;
       ({ colorOne = "red", colorTwo = "yellow", totalRows = 6, totalColumns = 7 } = opts);
       currentColor = colorOne;
@@ -24,7 +24,7 @@ module.exports = (function () {
       if (!emptyDot || winner){ return; }
       emptyDot.className = `dot ${currentColor}`;
       this.getColorArray().push(this.getCoordinate(context, emptyDot));
-      if (this.playerWon()) {
+      if (this.playerWon(this.getColorArray())) {
         this.handleWin(currentColor);
       } else {
         currentColor = this.switchColor(currentColor);
@@ -114,9 +114,8 @@ module.exports = (function () {
       this.updateElementbyId("scoreboard", `${this.capitalize(colorOne)}: ${colorOneWins}
         ${this.capitalize(colorTwo)}: ${colorTwoWins}`);
     },
-    playerWon: function () {
-      const array = this.getColorArray(),
-            strategies = [this.verticalStrategy, this.horizontalStrategy,
+    playerWon: function (array) {
+      const strategies = [this.verticalStrategy, this.horizontalStrategy,
                           this.diagonalStrategy1, this.diagonalStrategy2];
       if (array.length < 4) { return false; }
       for (let i = 0; i < strategies.length; i++) {

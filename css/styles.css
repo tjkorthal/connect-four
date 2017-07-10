@@ -27,6 +27,10 @@
   background-color: #34A853;
 }
 
+.dot.orange {
+  background-color: #FF9900;
+}
+
 .dot.off {
   background-color: transparent;
 }

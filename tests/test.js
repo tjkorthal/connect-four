@@ -8,6 +8,8 @@ test('capitalize capitalizes the first letter of a string', function (assert) {
 });
 
 test('switchColor changes between the 2 colors used in the game', function (assert){
+  ConnectFour.reset = function () { return; };
+  ConnectFour.initialize();
   assert.equal(ConnectFour.switchColor('red'), 'yellow');
   assert.equal(ConnectFour.switchColor('yellow'), 'red');
   assert.equal(ConnectFour.switchColor('green'), 'red');
@@ -35,5 +37,17 @@ test('checkSequence returns the number of points in a sequence', function (asser
   const array = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 3, y: 2 }];
   assert.equal(ConnectFour.checkSequence(ConnectFour.diagonalStrategy1, array, { x: 0, y: 0 }, 1), 2 );
   assert.equal(ConnectFour.checkSequence(ConnectFour.diagonalStrategy1, array, { x: 4, y: 0 }, 1), 0 );
+  assert.end();
+});
+
+test('playerWon returns if there is a run of 4 points in an array', function (assert){
+  const diagonalArray = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }],
+        horizontalArray = [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 3 }, { x: 0, y: 2 }],
+        verticalArray = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }],
+        noWin = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 3, y: 2 }, { x: 3, y: 3 }];
+  assert.true(ConnectFour.playerWon(diagonalArray));
+  assert.true(ConnectFour.playerWon(horizontalArray));
+  assert.true(ConnectFour.playerWon(verticalArray));
+  assert.false(ConnectFour.playerWon(noWin));
   assert.end();
 });
