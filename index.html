@@ -6,10 +6,23 @@
   <title>Connect Four</title>
 </head>
 <body>
-  <nav class="menu">
+  <div class="menu modal">
+    <label>Player One:</label>
+    <select name="playerOne">
+      <option selected>Yellow</option>
+      <option>Red</option>
+    </select>
+    <label>Player Two:</label>
+    <select name="playerTwo">
+      <option>Yellow</option>
+      <option selected>Red</option>
+    </select>
+    <button id="start">Start!</button>
+  </div>
+  <nav>
     <button id="reset">Reset</button>
-    <div id="scoreboard">Red: 0 Yellow: 0</div>
   </nav>
+  <div id="scoreboard">Red: 0 Yellow: 0</div>
   <p id="flash"></p>
   <section class="board">
   </section>

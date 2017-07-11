@@ -8,6 +8,7 @@ test('capitalize capitalizes the first letter of a string', function (assert) {
 });
 
 test('switchColor changes between the 2 colors used in the game', function (assert){
+  const reset = ConnectFour.reset;
   ConnectFour.reset = function () { return; };
   ConnectFour.initialize();
   assert.equal(ConnectFour.switchColor('red'), 'yellow');
@@ -16,6 +17,7 @@ test('switchColor changes between the 2 colors used in the game', function (asse
   assert.equal(ConnectFour.switchColor('Tyler'), 'red');
   assert.equal(ConnectFour.switchColor(4), 'red');
   assert.end();
+  ConnectFour.reset = reset;
 });
 
 test('strategies return the next coordinate in a direction', function (assert){

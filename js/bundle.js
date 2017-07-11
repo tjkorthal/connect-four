@@ -157,7 +157,9 @@ function startMenu(){
   const element = document.querySelector("nav.menu");
 }
 
+// startMenu();
 ConnectFour.initialize();
 document.getElementById("reset").addEventListener("click", function () { ConnectFour.reset(ConnectFour)});
+document.getElementById("start").addEventListener("click", function () { document.querySelector(".menu.modal").className += " hide" });
 
 },{"./connect-four.js":1}]},{},[2]);
