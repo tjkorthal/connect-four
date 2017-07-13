@@ -16,6 +16,7 @@ module.exports = (function () {
       const self = this;
       ({ colorOne = "red", colorTwo = "yellow", totalRows = 6, totalColumns = 7 } = opts);
       currentColor = colorOne;
+      this.updateScoreboard();
       this.reset(self);
     },
     addDot: function (context) {
@@ -112,8 +113,7 @@ module.exports = (function () {
       winner = true;
       this.updateElementbyId("flash", `${this.capitalize(color)} wins!`);
       color == colorOne ? colorOneWins++ : colorTwoWins++;
-      this.updateElementbyId("scoreboard", `${this.capitalize(colorOne)}: ${colorOneWins}
-        ${this.capitalize(colorTwo)}: ${colorTwoWins}`);
+      this.updateScoreboard();
     },
     playerWon: function (array) {
       const strategies = [this.verticalStrategy, this.horizontalStrategy,
@@ -145,21 +145,58 @@ module.exports = (function () {
     updateElementbyId: function (id, message) {
       const messageElement = document.querySelector("#" + id);
       messageElement.innerHTML = message;
+    },
+    updateScoreboard: function() {
+      this.updateElementbyId("scoreboard", `${this.capitalize(colorOne)}: ${colorOneWins}
+        ${this.capitalize(colorTwo)}: ${colorTwoWins}`);
     }
   };
 })();
 
 },{}],2:[function(require,module,exports){
-const ConnectFour = require('./connect-four.js');
+const ConnectFour = require('./connect-four.js'),
+      playerOneEl = document.querySelector("select[name='playerOne']"),
+      playerTwoEl = document.querySelector("select[name='playerTwo']");
 
-function startMenu(){
-  // TODO: add options on load for colors and board size
-  const element = document.querySelector("nav.menu");
+playerOneEl.addEventListener("change", function () {
+  if(playerTwoEl.value === playerOneEl.value){
+    playerTwoEl.value = "Select";
+  }
+  document.querySelectorAll("select[name='playerTwo'] option").forEach((el) => constrainOptions(el, playerOneEl.value));
+});
+
+playerTwoEl.addEventListener("change", function () {
+  if(playerOneEl.value === playerTwoEl.vaue){
+    playerOneEl.value = "Select";
+  }
+  document.querySelectorAll("select[name='playerOne'] option").forEach((el) => constrainOptions(el, playerTwoEl.value));
+});
+
+document.getElementById("reset").addEventListener("click", function () {
+  ConnectFour.reset(ConnectFour)
+});
+
+document.getElementById("start").addEventListener("click", start);
+
+function constrainOptions(el, optionValue) {
+  if(el.hasAttribute("disabled") && el.value !== optionValue){
+    el.removeAttribute("disabled")
+  } else if (!el.hasAttribute("disabled") && el.value === optionValue) {
+    el.removeAttribute("selected");
+    el.setAttribute("disabled", true);
+  }
 }
 
-// startMenu();
-ConnectFour.initialize();
-document.getElementById("reset").addEventListener("click", function () { ConnectFour.reset(ConnectFour)});
-document.getElementById("start").addEventListener("click", function () { document.querySelector(".menu.modal").className += " hide" });
+function start() {
+  let values = {
+    colorOne: playerOneEl.value,
+    colorTwo: playerTwoEl.value,
+    totalRows: document.querySelector("input[name='rows']").value || 6,
+    totalColumns: document.querySelector("input[name='columns']").value || 7
+  };
+  ConnectFour.initialize(values);
+  document.querySelector(".menu.modal").className += " hide";
+  document.getElementById("reset").className = "";
+}
 
 },{"./connect-four.js":1}]},{},[2]);

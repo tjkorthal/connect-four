@@ -15,6 +15,7 @@ module.exports = (function () {
       const self = this;
       ({ colorOne = "red", colorTwo = "yellow", totalRows = 6, totalColumns = 7 } = opts);
       currentColor = colorOne;
+      this.updateScoreboard();
       this.reset(self);
     },
     addDot: function (context) {
@@ -111,8 +112,7 @@ module.exports = (function () {
       winner = true;
       this.updateElementbyId("flash", `${this.capitalize(color)} wins!`);
       color == colorOne ? colorOneWins++ : colorTwoWins++;
-      this.updateElementbyId("scoreboard", `${this.capitalize(colorOne)}: ${colorOneWins}
-        ${this.capitalize(colorTwo)}: ${colorTwoWins}`);
+      this.updateScoreboard();
     },
     playerWon: function (array) {
       const strategies = [this.verticalStrategy, this.horizontalStrategy,
@@ -144,6 +144,10 @@ module.exports = (function () {
     updateElementbyId: function (id, message) {
       const messageElement = document.querySelector("#" + id);
       messageElement.innerHTML = message;
+    },
+    updateScoreboard: function() {
+      this.updateElementbyId("scoreboard", `${this.capitalize(colorOne)}: ${colorOneWins}
+        ${this.capitalize(colorTwo)}: ${colorTwoWins}`);
     }
   };
 })();
