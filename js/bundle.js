@@ -159,17 +159,11 @@ const ConnectFour = require('./connect-four.js'),
       playerTwoEl = document.querySelector("select[name='playerTwo']");
 
 playerOneEl.addEventListener("change", function () {
-  if(playerTwoEl.value === playerOneEl.value){
-    playerTwoEl.value = "Select";
-  }
-  document.querySelectorAll("select[name='playerTwo'] option").forEach((el) => constrainOptions(el, playerOneEl.value));
+  defineConstraint(playerOneEl);
 });
 
 playerTwoEl.addEventListener("change", function () {
-  if(playerOneEl.value === playerTwoEl.vaue){
-    playerOneEl.value = "Select";
-  }
-  document.querySelectorAll("select[name='playerOne'] option").forEach((el) => constrainOptions(el, playerTwoEl.value));
+  defineConstraint(playerTwoEl);
 });
 
 document.getElementById("reset").addEventListener("click", function () {
@@ -178,10 +172,18 @@ document.getElementById("reset").addEventListener("click", function () {
 
 document.getElementById("start").addEventListener("click", start);
 
-function constrainOptions(el, optionValue) {
-  if(el.hasAttribute("disabled") && el.value !== optionValue){
+function defineConstraint(constrainer){
+  let constrainee = constrainer === playerOneEl ? playerTwoEl : playerOneEl;
+  if(constrainee.value === constrainer.value){
+    constrainee.value = "Select";
+  }
+  document.querySelectorAll(`select[name=${constrainee.name}] option`).forEach((el) => constrainOptions(el, constrainer.value));
+}
+
+function constrainOptions(el, selectedValue) {
+  if(el.hasAttribute("disabled") && el.value !== selectedValue){
     el.removeAttribute("disabled")
-  } else if (!el.hasAttribute("disabled") && el.value === optionValue) {
+  } else if (!el.hasAttribute("disabled") && el.value === selectedValue) {
     el.removeAttribute("selected");
     el.setAttribute("disabled", true);
   }
