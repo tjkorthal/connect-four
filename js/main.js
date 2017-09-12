@@ -1,18 +1,13 @@
-const ConnectFour = require('./connect-four.js'),
+const ConnectFour = require('./connect-four'),
       playerOneEl = document.querySelector("select[name='playerOne']"),
       playerTwoEl = document.querySelector("select[name='playerTwo']");
 
-playerOneEl.addEventListener("change", function () {
-  defineConstraint(playerOneEl);
-});
+playerOneEl.addEventListener("change", defineConstraint.bind(this, playerOneEl));
 
-playerTwoEl.addEventListener("change", function () {
-  defineConstraint(playerTwoEl);
-});
+playerTwoEl.addEventListener("change", defineConstraint.bind(this, playerTwoEl));
 
-document.getElementById("reset").addEventListener("click", function () {
-  ConnectFour.reset(ConnectFour)
-});
+document.getElementById("reset").addEventListener("click",
+  ConnectFour.reset.bind(ConnectFour));
 
 document.getElementById("start").addEventListener("click", start);
 
