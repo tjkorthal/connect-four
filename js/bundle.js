@@ -1,4 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+const DOM = require('./dom');
 let colorOne,
     colorTwo,
     totalRows,
@@ -28,9 +29,9 @@ function initialize(opts = {}) {
 }
 
 function addDot() {
-  const emptyDotArray = Array.from(this.querySelectorAll(
-      `div.dot:not(.${colorOne}):not(.${colorTwo})`)),
-        emptyDot = emptyDotArray.pop();
+  const selector = `div.dot:not(.${colorOne}):not(.${colorTwo})`;
+  const emptyDotArray = Array.from(DOM.selectFromElement(this, selector));
+  const emptyDot = emptyDotArray.pop();
   if (!emptyDot || winner) { return; }
   emptyDot.className = `dot ${currentColor}`;
   getColorArray().push(getCoordinate(this, emptyDot));
@@ -38,12 +39,12 @@ function addDot() {
     handleWin(currentColor);
   } else {
     currentColor = switchColor(currentColor);
-    updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
+    DOM.updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
   }
 }
 
 function addListeners() {
-  const columns = document.querySelectorAll(".column");
+  const columns = DOM.columns();
   for (let i = columns.length - 1; i >= 0; i--) {
     (function(i) {
       columns[i].addEventListener("click", addDot);
@@ -69,51 +70,24 @@ function containsCoordinate(array, coordinate) {
   return false;
 }
 
-function createBoard() {
-  const target = document.querySelector("section.board");
-  target.innerHTML = "";
-  for (let i = 0; i < totalColumns; i++) {
-    const columnNode = createColumn(i);
-    for (let j = totalRows - 1; j >= 0; j--) {
-      const dotNode = createDot(j);
-      columnNode.appendChild(dotNode);
-    }
-    target.appendChild(columnNode);
-  }
-}
-
-function createColumn(index) {
-  const column = document.createElement("div");
-  column.className = "column";
-  column.setAttribute("data-column-index", index);
-  return column;
-}
-
-function createDot(index) {
-  const dot = document.createElement("div");
-  dot.className = "dot";
-  dot.setAttribute("data-row-index", index);
-  return dot;
-}
-
 function diagonalStrategy1(coordinate) {
   return { "x": coordinate.x + 1,
-  "y": coordinate.y + 1 };
+           "y": coordinate.y + 1 };
 }
 
 function diagonalStrategy2(coordinate) {
   return { "x": coordinate.x - 1,
-            "y": coordinate.y + 1 };
+           "y": coordinate.y + 1 };
 }
 
 function horizontalStrategy(coordinate) {
   return { "x": coordinate.x + 1,
-            "y": coordinate.y };
+           "y": coordinate.y };
 }
 
 function verticalStrategy(coordinate) {
   return { "x": coordinate.x,
-            "y": coordinate.y + 1 };
+           "y": coordinate.y + 1 };
 }
 
 function getCoordinate(column, row) {
@@ -124,7 +98,7 @@ function getCoordinate(column, row) {
 
 function handleWin(color) {
   winner = true;
-  updateElementbyId("flash", `${capitalize(color)} wins!`);
+  DOM.updateElementbyId("flash", `${capitalize(color)} wins!`);
   color == colorOne ? colorOneWins++ : colorTwoWins++;
   updateScoreboard();
 }
@@ -149,10 +123,52 @@ function reset() {
   winner = false;
   colorOneArray = [];
   colorTwoArray = [];
-  createBoard();
+  DOM.createBoard(totalColumns, totalRows);
   currentColor = switchColor(currentColor);
-  updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
+  DOM.updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
   addListeners();
+}
+
+function updateScoreboard() {
+  DOM.updateElementbyId("scoreboard", `${capitalize(colorOne)}: ${colorOneWins}
+    ${capitalize(colorTwo)}: ${colorTwoWins}`);
+}
+
+module.exports = {
+  initialize,
+  reset
+};
+
+},{"./dom":2}],2:[function(require,module,exports){
+// Module to isolate DOM manipulation from game logic
+const board = () => document.querySelector("section.board");
+const columns = () => document.querySelectorAll(".column");
+
+function createColumn(index) {
+  const column = document.createElement("div");
+  column.className = "column";
+  column.setAttribute("data-column-index", index);
+  return column;
+}
+
+function createBoard(totalColumns, totalRows) {
+  const target = board();
+  target.innerHTML = "";
+  for (let i = 0; i < totalColumns; i++) {
+    const columnNode = createColumn(i);
+    for (let j = totalRows - 1; j >= 0; j--) {
+      const dotNode = createDot(j);
+      columnNode.appendChild(dotNode);
+    }
+    target.appendChild(columnNode);
+  }
+}
+
+function createDot(index) {
+  const dot = document.createElement("div");
+  dot.className = "dot";
+  dot.setAttribute("data-row-index", index);
+  return dot;
 }
 
 function updateElementbyId(id, message) {
@@ -160,36 +176,20 @@ function updateElementbyId(id, message) {
   messageElement.innerHTML = message;
 }
 
-function updateScoreboard() {
-  updateElementbyId("scoreboard", `${capitalize(colorOne)}: ${colorOneWins}
-    ${capitalize(colorTwo)}: ${colorTwoWins}`);
+function selectFromElement(element, selector) {
+  return element.querySelectorAll(selector);
 }
 
 module.exports = {
-  initialize,
-  addDot,
-  addListeners,
-  capitalize,
-  checkSequence,
-  containsCoordinate,
-  createBoard,
+  board,
+  columns,
   createColumn,
-  createDot,
-  diagonalStrategy1,
-  diagonalStrategy2,
-  horizontalStrategy,
-  verticalStrategy,
-  getColorArray,
-  getCoordinate,
-  handleWin,
-  playerWon,
-  reset,
-  switchColor,
+  createBoard,
   updateElementbyId,
-  updateScoreboard
-};
+  selectFromElement
+}
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 const ConnectFour = require('./connect-four'),
       playerOneEl = document.querySelector("select[name='playerOne']"),
       playerTwoEl = document.querySelector("select[name='playerTwo']");
@@ -232,4 +232,4 @@ function start() {
   document.getElementById("reset").className = "";
 }
 
-},{"./connect-four":1}]},{},[2]);
+},{"./connect-four":1}]},{},[3]);

@@ -12,7 +12,6 @@ test.skip('switchColor changes between the 2 colors used in the game', function 
         updateScoreboard = ConnectFour.updateScoreboard;
   ConnectFour.reset = function () { return; };
   ConnectFour.updateScoreboard = function () { return; };
-  console.dir(ConnectFour);
   ConnectFour.initialize();
   assert.equal(ConnectFour.switchColor('red'), 'yellow');
   assert.equal(ConnectFour.switchColor('yellow'), 'red');

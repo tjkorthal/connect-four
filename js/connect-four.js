@@ -1,3 +1,4 @@
+const DOM = require('./dom');
 let colorOne,
     colorTwo,
     totalRows,
@@ -27,9 +28,9 @@ function initialize(opts = {}) {
 }
 
 function addDot() {
-  const emptyDotArray = Array.from(this.querySelectorAll(
-      `div.dot:not(.${colorOne}):not(.${colorTwo})`)),
-        emptyDot = emptyDotArray.pop();
+  const selector = `div.dot:not(.${colorOne}):not(.${colorTwo})`;
+  const emptyDotArray = Array.from(DOM.selectFromElement(this, selector));
+  const emptyDot = emptyDotArray.pop();
   if (!emptyDot || winner) { return; }
   emptyDot.className = `dot ${currentColor}`;
   getColorArray().push(getCoordinate(this, emptyDot));
@@ -37,12 +38,12 @@ function addDot() {
     handleWin(currentColor);
   } else {
     currentColor = switchColor(currentColor);
-    updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
+    DOM.updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
   }
 }
 
 function addListeners() {
-  const columns = document.querySelectorAll(".column");
+  const columns = DOM.columns();
   for (let i = columns.length - 1; i >= 0; i--) {
     (function(i) {
       columns[i].addEventListener("click", addDot);
@@ -68,51 +69,24 @@ function containsCoordinate(array, coordinate) {
   return false;
 }
 
-function createBoard() {
-  const target = document.querySelector("section.board");
-  target.innerHTML = "";
-  for (let i = 0; i < totalColumns; i++) {
-    const columnNode = createColumn(i);
-    for (let j = totalRows - 1; j >= 0; j--) {
-      const dotNode = createDot(j);
-      columnNode.appendChild(dotNode);
-    }
-    target.appendChild(columnNode);
-  }
-}
-
-function createColumn(index) {
-  const column = document.createElement("div");
-  column.className = "column";
-  column.setAttribute("data-column-index", index);
-  return column;
-}
-
-function createDot(index) {
-  const dot = document.createElement("div");
-  dot.className = "dot";
-  dot.setAttribute("data-row-index", index);
-  return dot;
-}
-
 function diagonalStrategy1(coordinate) {
   return { "x": coordinate.x + 1,
-  "y": coordinate.y + 1 };
+           "y": coordinate.y + 1 };
 }
 
 function diagonalStrategy2(coordinate) {
   return { "x": coordinate.x - 1,
-            "y": coordinate.y + 1 };
+           "y": coordinate.y + 1 };
 }
 
 function horizontalStrategy(coordinate) {
   return { "x": coordinate.x + 1,
-            "y": coordinate.y };
+           "y": coordinate.y };
 }
 
 function verticalStrategy(coordinate) {
   return { "x": coordinate.x,
-            "y": coordinate.y + 1 };
+           "y": coordinate.y + 1 };
 }
 
 function getCoordinate(column, row) {
@@ -123,7 +97,7 @@ function getCoordinate(column, row) {
 
 function handleWin(color) {
   winner = true;
-  updateElementbyId("flash", `${capitalize(color)} wins!`);
+  DOM.updateElementbyId("flash", `${capitalize(color)} wins!`);
   color == colorOne ? colorOneWins++ : colorTwoWins++;
   updateScoreboard();
 }
@@ -148,22 +122,19 @@ function reset() {
   winner = false;
   colorOneArray = [];
   colorTwoArray = [];
-  createBoard();
+  DOM.createBoard(totalColumns, totalRows);
   currentColor = switchColor(currentColor);
-  updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
+  DOM.updateElementbyId("flash", `${capitalize(currentColor)}'s turn`);
   addListeners();
 }
 
-function updateElementbyId(id, message) {
-  const messageElement = document.querySelector("#" + id);
-  messageElement.innerHTML = message;
-}
-
 function updateScoreboard() {
-  updateElementbyId("scoreboard", `${capitalize(colorOne)}: ${colorOneWins}
+  DOM.updateElementbyId("scoreboard", `${capitalize(colorOne)}: ${colorOneWins}
     ${capitalize(colorTwo)}: ${colorTwoWins}`);
 }
 
+// Only required exports are initialize and reset.
+// TODO: Find testing solution that doesn't require all of these other exports
 module.exports = {
   initialize,
   addDot,
@@ -171,9 +142,6 @@ module.exports = {
   capitalize,
   checkSequence,
   containsCoordinate,
-  createBoard,
-  createColumn,
-  createDot,
   diagonalStrategy1,
   diagonalStrategy2,
   horizontalStrategy,
@@ -184,6 +152,5 @@ module.exports = {
   playerWon,
   reset,
   switchColor,
-  updateElementbyId,
   updateScoreboard
 };
