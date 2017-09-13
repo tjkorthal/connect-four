@@ -1,4 +1,4 @@
-const ConnectFour = require('./connect-four'),
+const ConnectFour = require('./game'),
       playerOneEl = document.querySelector("select[name='playerOne']"),
       playerTwoEl = document.querySelector("select[name='playerTwo']");
 
@@ -21,7 +21,7 @@ function defineConstraint(constrainer){
 
 function constrainOptions(el, selectedValue) {
   if(el.hasAttribute("disabled") && el.value !== selectedValue){
-    el.removeAttribute("disabled")
+    el.removeAttribute("disabled");
   } else if (!el.hasAttribute("disabled") && el.value === selectedValue) {
     el.removeAttribute("selected");
     el.setAttribute("disabled", true);

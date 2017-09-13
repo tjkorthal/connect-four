@@ -45,4 +45,4 @@ module.exports = {
   createBoard,
   updateElementbyId,
   selectFromElement
-}
+};

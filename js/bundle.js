@@ -136,7 +136,22 @@ function updateScoreboard() {
 
 module.exports = {
   initialize,
-  reset
+  addDot,
+  addListeners,
+  capitalize,
+  checkSequence,
+  containsCoordinate,
+  diagonalStrategy1,
+  diagonalStrategy2,
+  horizontalStrategy,
+  verticalStrategy,
+  getColorArray,
+  getCoordinate,
+  handleWin,
+  playerWon,
+  reset,
+  switchColor,
+  updateScoreboard
 };
 
 },{"./dom":2}],2:[function(require,module,exports){
@@ -187,10 +202,19 @@ module.exports = {
   createBoard,
   updateElementbyId,
   selectFromElement
-}
+};
 
 },{}],3:[function(require,module,exports){
-const ConnectFour = require('./connect-four'),
+// Public API for Connect Four game
+const ConnectFour = require('./connect-four');
+
+module.exports = {
+  initialize: ConnectFour.initialize,
+  reset: ConnectFour.reset
+}
+
+},{"./connect-four":1}],4:[function(require,module,exports){
+const ConnectFour = require('./game'),
       playerOneEl = document.querySelector("select[name='playerOne']"),
       playerTwoEl = document.querySelector("select[name='playerTwo']");
 
@@ -213,7 +237,7 @@ function defineConstraint(constrainer){
 
 function constrainOptions(el, selectedValue) {
   if(el.hasAttribute("disabled") && el.value !== selectedValue){
-    el.removeAttribute("disabled")
+    el.removeAttribute("disabled");
   } else if (!el.hasAttribute("disabled") && el.value === selectedValue) {
     el.removeAttribute("selected");
     el.setAttribute("disabled", true);
@@ -232,4 +256,4 @@ function start() {
   document.getElementById("reset").className = "";
 }
 
-},{"./connect-four":1}]},{},[3]);
+},{"./game":3}]},{},[4]);

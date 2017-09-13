@@ -133,8 +133,6 @@ function updateScoreboard() {
     ${capitalize(colorTwo)}: ${colorTwoWins}`);
 }
 
-// Only required exports are initialize and reset.
-// TODO: Find testing solution that doesn't require all of these other exports
 module.exports = {
   initialize,
   addDot,
